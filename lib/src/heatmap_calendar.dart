@@ -87,6 +87,9 @@ class HeatMapCalendar extends StatefulWidget {
   /// The double value of [HeatMapColorTip]'s tip container's size.
   final double? colorTipSize;
 
+  /// The first day of the week. 1 = Monday, ... , 7 = Sunday.
+  final int startWeekday;
+
   const HeatMapCalendar({
     Key? key,
     required this.colorsets,
@@ -109,6 +112,7 @@ class HeatMapCalendar extends StatefulWidget {
     this.colorTipHelper,
     this.colorTipCount,
     this.colorTipSize,
+    this.startWeekday = DateTime.sunday,
   }) : super(key: key);
 
   @override
@@ -178,7 +182,8 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        for (String label in DateUtil.WEEK_LABEL.skip(1))
+        for (String label
+            in DateUtil.weekLabels(widget.startWeekday).skip(1))
           WidgetUtil.flexibleContainer(
             widget.flexible ?? false,
             false,
@@ -218,6 +223,7 @@ class _HeatMapCalendar extends State<HeatMapCalendar> {
           HeatMapCalendarPage(
             baseDate: _currentDate ?? DateTime.now(),
             colorMode: widget.colorMode,
+            startWeekday: widget.startWeekday,
             flexible: widget.flexible,
             size: widget.size,
             fontSize: widget.fontSize,

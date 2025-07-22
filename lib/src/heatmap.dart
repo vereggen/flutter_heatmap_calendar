@@ -87,12 +87,16 @@ class HeatMap extends StatefulWidget {
   /// The double value of [HeatMapColorTip]'s tip container's size.
   final double? colorTipSize;
 
+  /// The first day of the week. 1 = Monday, ... , 7 = Sunday.
+  final int startWeekday;
+
   const HeatMap({
     Key? key,
     required this.colorsets,
     this.colorMode = ColorMode.opacity,
     this.startDate,
     this.endDate,
+    this.startWeekday = DateTime.sunday,
     this.textColor,
     this.size = 20,
     this.fontSize,
@@ -136,6 +140,7 @@ class _HeatMap extends State<HeatMap> {
           startDate: widget.startDate ??
               DateUtil.oneYearBefore(widget.endDate ?? DateTime.now()),
           colorMode: widget.colorMode,
+          startWeekday: widget.startWeekday,
           size: widget.size,
           fontSize: widget.fontSize,
           datasets: widget.datasets,

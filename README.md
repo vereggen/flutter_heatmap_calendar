@@ -48,6 +48,7 @@ import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 |colorMode|`ColorMode`|`ColorMode.opacity`|`ColorMode.opacity` requires just one colorsets value and changes color dynamically based on hightest value of `datasets`.<br>`ColorMode.color` changes colors based on `colorsets` thresholds key value.|
 |size|`double?`|`20`|The size of every block.|
 |fontSize|`double?`|`null`|The size of every text.|
+|startWeekday|`int`|`7`|First day of week (1=Mon ... 7=Sun).|
 |onClick|`Function(DateTime)?`|`null`|Callback function which will be called if user clicks the block.|
 |margin|`EdgeInsets?`|`EdgeInsets.all(2)`|The margin value of block.|
 |borderRadius|`double?`|`5`|Border radius value of block.|
@@ -74,6 +75,7 @@ import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 |monthFontSize|`double?`|`12`|The size of month label.|
 |weekFontSize|`double?`|`12`|The size of week label.|
 |weekTextColor|`Color?`|![#758EA1](https://via.placeholder.com/15/758EA1/000000?text=+) `Color(0xFF758EA1)`|Default color of every block.|Color value of week label.|
+|startWeekday|`int`|`7`|First day of week (1=Mon ... 7=Sun).|
 |onClick|`Function(DateTime)?`|`null`|Callback function which will be called if user clicks the block.|
 |margin|`EdgeInsets`|`EdgeInsets.all(2)`|The margin value of block.|
 |borderRadius|`double?`|`5`|Border radius value of block.|
@@ -91,6 +93,7 @@ import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 ...
 HeatMap(
+  startWeekday: DateTime.monday,
   datasets: {
     DateTime(2021, 1, 6): 3,
     DateTime(2021, 1, 7): 7,
@@ -123,6 +126,7 @@ import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 ...
 HeatMapCalendar(
   defaultColor: Colors.white,
+  startWeekday: DateTime.monday,
   flexible: true,
   colorMode: ColorMode.color,
   datasets: {

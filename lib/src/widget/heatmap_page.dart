@@ -75,11 +75,15 @@ class HeatMapPage extends StatelessWidget {
 
   final bool? showText;
 
+  /// The first day of the week. 1 = Monday, ... , 7 = Sunday.
+  final int startWeekday;
+
   HeatMapPage({
     Key? key,
     required this.colorMode,
     required this.startDate,
     required this.endDate,
+    this.startWeekday = DateTime.sunday,
     this.size,
     this.fontSize,
     this.datasets,
@@ -101,7 +105,8 @@ class HeatMapPage extends StatelessWidget {
 
     // Set cursor(position) to first day of weeks
     // until cursor reaches the final week.
-    for (int datePos = 0 - (startDate.weekday % 7);
+    for (int datePos =
+            0 - DateUtil.weekdayOffset(startDate.weekday, startWeekday);
         datePos <= _dateDifferent;
         datePos += 7) {
       // Get first day of week by adding cursor's value to startDate.
@@ -118,6 +123,7 @@ class HeatMapPage extends StatelessWidget {
             ? DateUtil.changeDay(startDate, datePos + 6)
             : endDate,
         colorMode: colorMode,
+        startWeekday: startWeekday,
         numDays: min(endDate.difference(_firstDay).inDays + 1, 7),
         size: size,
         fontSize: fontSize,
@@ -152,6 +158,7 @@ class HeatMapPage extends StatelessWidget {
               fontSize: fontSize,
               size: size,
               fontColor: textColor,
+              startWeekday: startWeekday,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

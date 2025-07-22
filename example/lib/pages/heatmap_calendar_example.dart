@@ -60,6 +60,7 @@ class _HeatMapCalendarExample extends State<HeatMapCalendarExample> {
                 // HeatMapCalendar
                 child: HeatMapCalendar(
                   flexible: true,
+                  startWeekday: DateTime.monday,
                   datasets: heatMapDatasets,
                   colorMode:
                       isOpacityMode ? ColorMode.opacity : ColorMode.color,
