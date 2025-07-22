@@ -69,6 +69,9 @@ class HeatMapColumn extends StatelessWidget {
   /// Show day text in every blocks if the value is true.
   final bool? showText;
 
+  /// The first day of the week. 1 = Monday, ... , 7 = Sunday.
+  final int startWeekday;
+
   // The number of day blocks to draw. This should be seven for all but the
   // current week.
   final int numDays;
@@ -79,6 +82,7 @@ class HeatMapColumn extends StatelessWidget {
     required this.endDate,
     required this.colorMode,
     required this.numDays,
+    this.startWeekday = DateTime.sunday,
     this.size,
     this.fontSize,
     this.defaultColor,
@@ -111,7 +115,10 @@ class HeatMapColumn extends StatelessWidget {
             selectedColor: datasets?.keys.contains(DateTime(
                         startDate.year,
                         startDate.month,
-                        startDate.day - startDate.weekday % 7 + i)) ??
+                        startDate.day -
+                            DateUtil.weekdayOffset(
+                                startDate.weekday, startWeekday) +
+                            i)) ??
                     false
                 // If colorMode is ColorMode.opacity,
                 ? colorMode == ColorMode.opacity
@@ -121,7 +128,10 @@ class HeatMapColumn extends StatelessWidget {
                     ? colorsets?.values.first.withOpacity((datasets?[DateTime(
                                 startDate.year,
                                 startDate.month,
-                                startDate.day + i - (startDate.weekday % 7))] ??
+                                startDate.day +
+                                    i -
+                                    DateUtil.weekdayOffset(
+                                        startDate.weekday, startWeekday))] ??
                             1) /
                         (maxValue ?? 1))
                     // Else if colorMode is ColorMode.Color.
@@ -130,8 +140,13 @@ class HeatMapColumn extends StatelessWidget {
                     // Using DatasetsUtil.getColor()
                     : DatasetsUtil.getColor(
                         colorsets,
-                        datasets?[DateTime(startDate.year, startDate.month,
-                            startDate.day + i - (startDate.weekday % 7))])
+                        datasets?[DateTime(
+                            startDate.year,
+                            startDate.month,
+                            startDate.day +
+                                i -
+                                DateUtil.weekdayOffset(
+                                    startDate.weekday, startWeekday))])
                 : null,
           ),
         ),

@@ -33,8 +33,7 @@ class DateUtil {
     'Dec',
   ];
 
-  static const List<String> WEEK_LABEL = [
-    '',
+  static const List<String> _WEEK_LABEL_BASE = [
     'Sun',
     'Mon',
     'Tue',
@@ -43,6 +42,22 @@ class DateUtil {
     'Fri',
     'Sat',
   ];
+
+  /// Generate week labels starting from [startWeekday].
+  ///
+  /// [startWeekday] follows [DateTime]'s convention where Monday is 1 and
+  /// Sunday is 7. The returned list always starts with an empty string so the
+  /// labels can be accessed using 1-based indexing like the original
+  /// [WEEK_LABEL] constant.
+  static List<String> weekLabels(int startWeekday) {
+    assert(startWeekday >= DateTime.monday &&
+        startWeekday <= DateTime.sunday);
+    return [
+      '',
+      for (int i = 0; i < DAYS_IN_WEEK; i++)
+        _WEEK_LABEL_BASE[(startWeekday - 1 + i) % DAYS_IN_WEEK]
+    ];
+  }
 
   /// Get start day of month.
   static DateTime startDayOfMonth(final DateTime referenceDate) =>
@@ -57,22 +72,26 @@ class DateUtil {
       DateTime(referenceDate.year - 1, referenceDate.month, referenceDate.day);
 
   /// Separate [referenceDate]'s month to List of every weeks.
-  static List<Map<DateTime, DateTime>> separatedMonth(
-      final DateTime referenceDate) {
+  static List<Map<DateTime, DateTime>> separatedMonth(final DateTime referenceDate,
+      {int startWeekday = DateTime.sunday}) {
     DateTime _startDate = startDayOfMonth(referenceDate);
-    DateTime _endDate = DateTime(_startDate.year, _startDate.month,
-        _startDate.day + DAYS_IN_WEEK - _startDate.weekday % DAYS_IN_WEEK - 1);
+    DateTime _endDate = DateTime(
+        _startDate.year,
+        _startDate.month,
+        _startDate.day +
+            DAYS_IN_WEEK -
+            weekdayOffset(_startDate.weekday, startWeekday) -
+            1);
     DateTime _finalDate = endDayOfMonth(referenceDate);
     List<Map<DateTime, DateTime>> _savedMonth = [];
 
     while (_startDate.isBefore(_finalDate) || _startDate == _finalDate) {
       _savedMonth.add({_startDate: _endDate});
       _startDate = changeDay(_endDate, 1);
-      _endDate = changeDay(
-          _endDate,
-          endDayOfMonth(_endDate).day - _startDate.day >= DAYS_IN_WEEK
-              ? DAYS_IN_WEEK
-              : endDayOfMonth(_endDate).day - _startDate.day + 1);
+      DateTime tentativeEnd = changeDay(_startDate, DAYS_IN_WEEK - 1);
+      _endDate = tentativeEnd.month == _startDate.month
+          ? tentativeEnd
+          : endDayOfMonth(_startDate);
     }
     return _savedMonth;
   }
@@ -125,6 +144,15 @@ class DateUtil {
 
   // static bool isStartDayOfMonth(final DateTime referenceDate) =>
   //     compareDate(referenceDate, startDayOfMonth(referenceDate));
+
+  /// Convert [weekday] into index based on [startWeekday].
+  /// Returns 0 for the first day of the week and 6 for the last.
+  static int weekdayOffset(int weekday, int startWeekday) {
+    assert(weekday >= DateTime.monday && weekday <= DateTime.sunday);
+    assert(startWeekday >= DateTime.monday &&
+        startWeekday <= DateTime.sunday);
+    return (weekday - startWeekday + DAYS_IN_WEEK) % DAYS_IN_WEEK;
+  }
 
   //#endregion
 }

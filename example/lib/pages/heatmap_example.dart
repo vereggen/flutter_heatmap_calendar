@@ -60,6 +60,7 @@ class _HeatMapExample extends State<HeatMapExample> {
                   scrollable: true,
                   colorMode:
                       isOpacityMode ? ColorMode.opacity : ColorMode.color,
+                  startWeekday: DateTime.monday,
                   datasets: heatMapDatasets,
                   colorsets: const {
                     1: Colors.red,

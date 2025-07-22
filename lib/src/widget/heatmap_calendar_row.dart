@@ -65,11 +65,15 @@ class HeatMapCalendarRow extends StatelessWidget {
   /// Paratmeter gives clicked [DateTime] value.
   final Function(DateTime)? onClick;
 
+  /// The first day of the week. 1 = Monday, ... , 7 = Sunday.
+  final int startWeekday;
+
   HeatMapCalendarRow({
     Key? key,
     required this.startDate,
     required this.endDate,
     required this.colorMode,
+    this.startWeekday = DateTime.sunday,
     this.size,
     this.fontSize,
     this.defaultColor,
@@ -91,10 +95,14 @@ class HeatMapCalendarRow extends StatelessWidget {
           // the last day is not a saturday.
           (i) => (startDate == DateUtil.startDayOfMonth(startDate) &&
                       endDate.day - startDate.day != 7 &&
-                      i < (startDate.weekday % 7)) ||
+                      i <
+                          DateUtil.weekdayOffset(
+                              startDate.weekday, startWeekday)) ||
                   (endDate == DateUtil.endDayOfMonth(endDate) &&
                       endDate.day - startDate.day != 7 &&
-                      i > (endDate.weekday % 7))
+                      i >
+                          DateUtil.weekdayOffset(
+                              endDate.weekday, startWeekday))
               ? Container(
                   width: size ?? 42,
                   height: size ?? 42,
@@ -106,8 +114,13 @@ class HeatMapCalendarRow extends StatelessWidget {
                   // start day of week value and end day of week.
                   //
                   // So we have to give every day information to each HeatMapContainer.
-                  date: DateTime(startDate.year, startDate.month,
-                      startDate.day - startDate.weekday % 7 + i),
+                  date: DateTime(
+                      startDate.year,
+                      startDate.month,
+                      startDate.day -
+                          DateUtil.weekdayOffset(
+                              startDate.weekday, startWeekday) +
+                          i),
                   backgroundColor: defaultColor,
                   size: size,
                   fontSize: fontSize,
@@ -122,7 +135,10 @@ class HeatMapCalendarRow extends StatelessWidget {
                   selectedColor: datasets?.keys.contains(DateTime(
                               startDate.year,
                               startDate.month,
-                              startDate.day - startDate.weekday % 7 + i)) ??
+                              startDate.day -
+                                  DateUtil.weekdayOffset(
+                                      startDate.weekday, startWeekday) +
+                                  i)) ??
                           false
                       // If colorMode is ColorMode.opacity,
                       ? colorMode == ColorMode.opacity
@@ -135,7 +151,9 @@ class HeatMapCalendarRow extends StatelessWidget {
                                           startDate.month,
                                           startDate.day +
                                               i -
-                                              (startDate.weekday % 7))] ??
+                                              DateUtil.weekdayOffset(
+                                                  startDate.weekday,
+                                                  startWeekday))] ??
                                   1) /
                               (maxValue ?? 1))
                           // Else if colorMode is ColorMode.Color.
@@ -147,7 +165,11 @@ class HeatMapCalendarRow extends StatelessWidget {
                               datasets?[DateTime(
                                   startDate.year,
                                   startDate.month,
-                                  startDate.day + i - (startDate.weekday % 7))])
+                                  startDate.day +
+                                      i -
+                                      DateUtil.weekdayOffset(
+                                          startDate.weekday,
+                                          startWeekday))])
                       : null,
                 ),
         ),
